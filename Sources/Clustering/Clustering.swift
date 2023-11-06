@@ -31,7 +31,7 @@ extension Clustering {
 	public func run(
 		data: [DataType],
 		maxIterations: Int = 20,
-		kRange: Range<Int> = (2..<14)
+		kRange: Range<Int> = (2..<9)
 	) {
 		queue.cancelAllOperations()
 		

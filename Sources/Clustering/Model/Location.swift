@@ -13,8 +13,8 @@ public protocol ClusterData: Equatable {
 
 public struct Location {
 	// MARK: - Properties
-	public var longitude: Double
-	public var latitude: Double
+	public let longitude: Double
+	public let latitude: Double
 	
 	static let zero = Location(longitude: 0, latitude: 0)
 	
@@ -30,7 +30,7 @@ public extension Location {
 	/// 유클리디안 거리를 구합니다.
 	/// (x1 - x2)^2 + (y1 - y2)^2
 	func euclideanDistance(with other: Location) -> Double {
-		return Double(pow(self.latitude - other.latitude, 2)) * Double(pow(self.longitude - other.longitude, 2))
+		return Double(pow(self.latitude - other.latitude, 2)) + Double(pow(self.longitude - other.longitude, 2))
 	}
 	
 	/// 거리를 구합니다.
