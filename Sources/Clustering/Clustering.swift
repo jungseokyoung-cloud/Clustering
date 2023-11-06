@@ -27,7 +27,9 @@ public final class Clustering<DataType: ClusterData> {
 
 // MARK: - Run Methods
 extension Clustering {
-	/// KMeans를 실행합니다.
+	/// KMeans를 실행합니다. `maxIteration`을 통해 최대 실행횟수를 지정할 수 있으며,
+	/// `kRange`를 통해 k값의 범위를 지정할 수 있습니다.
+	/// default는 `maxIteration = 20`, `kRange = (2..<9)`입니다
 	public func run(
 		data: [DataType],
 		maxIterations: Int = 20,
