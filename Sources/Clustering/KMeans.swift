@@ -14,12 +14,12 @@ final class KMeans<T: ClusterData>: Operation {
 	
 	/// KMeans의 최대 Iteration
 	var maxIterations: Int
-
+	
 	/// 센트로이드의 이동이 있었는지에 대한 여부.
 	private(set) var isChanged: Bool
 	
 	/// Cluster들의 Centriods
-	var centriods: [Location] { clusters.map { $0.centriod } }
+	var centroids: [Location] { clusters.map { $0.centroid } }
 	
 	private(set) var dbi = Double.greatestFiniteMagnitude
 	
@@ -157,7 +157,7 @@ extension KMeans {
 			for j in 0..<clusters.count where i != j {
 				let sumOfDevations = deviations[i] + deviations[j]
 				
-				let distanceCenters = clusters[i].centriod.distance(with: clusters[j].centriod)
+				let distanceCenters = clusters[i].centroid.distance(with: clusters[j].centroid)
 				
 				maxValue = max(maxValue, sumOfDevations / distanceCenters)
 			}

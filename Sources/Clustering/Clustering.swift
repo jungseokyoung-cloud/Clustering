@@ -65,6 +65,6 @@ extension Clustering {
 	private func convertToClusterResults(_ clusters: [Cluster<DataType>]) -> [ClusterResult<DataType>] {
 		clusters
 			.filter { !$0.group.isEmpty }
-			.map { ClusterResult(centriod: $0.centriod, group: $0.group.allValues()) }
+			.map { ClusterResult(centriod: $0.centroid, group: $0.group.allValues()) }
 	}
 }

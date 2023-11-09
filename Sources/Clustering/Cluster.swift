@@ -10,7 +10,7 @@ import Foundation
 final class Cluster<T: ClusterData> {
 	// MARK: - Properties
 	/// Cluster의 중심
-	var centriod: Location
+	var centroid: Location
 		
 	/// Cluster 내부 점들
 	var group: LinkedList<T>
@@ -18,8 +18,8 @@ final class Cluster<T: ClusterData> {
 	private var sumOfLocation: Location
 	
 	// MARK: - Initalizers
-	init(centriod: Location) {
-		self.centriod = centriod
+	init(centroid: Location) {
+		self.centroid = centroid
 		self.group = LinkedList<T>()
 		sumOfLocation = .zero
 	}
@@ -47,29 +47,29 @@ extension Cluster {
 	func combine(with other: Cluster) {
 		self.group.merge(other: other.group)
 		sumOfLocation += other.sumOfLocation
-		updateCentriod()
+		updateCentroid()
 	}
 }
 
 // MARK: - Centriod 로직
 extension Cluster {
 	/// Cluster내의 모든 점의 평균을 통해 Centriod를 업데이트합니다.
-	func updateCentriod() {
+	func updateCentroid() {
 		if group.size == 0 { return }
-		centriod = sumOfLocation / Double(group.size)
+		centroid = sumOfLocation / Double(group.size)
 	}
 	
 	/// Cluster의 Centriod로부터 분산을 리턴합니다.
 	func deviation() -> Double {
 		return group.allValues()
 			.map { $0.location }
-			.reduce(0) { $0 + centriod.distance(with: $1) } / Double(group.size)
+			.reduce(0) { $0 + centroid.distance(with: $1) } / Double(group.size)
 	}
 }
 
 // MARK: - Equatable
 extension Cluster: Equatable {
 	static func == (lhs: Cluster, rhs: Cluster) -> Bool {
-		return lhs.centriod == rhs.centriod
+		return lhs.centroid == rhs.centroid
 	}
 }
