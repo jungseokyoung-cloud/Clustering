@@ -5,11 +5,9 @@ Swift KMeans Clustering
 |:---:|:---:|:---:|
 |<img src="https://github.com/jungseokyoung-cloud/Clustering/assets/81402827/313923a5-c026-47c5-aec7-19cd4eba38d9" width="200"/>|<img src="https://github.com/jungseokyoung-cloud/Clustering/assets/81402827/eef60c27-a7a9-48aa-9554-5c494593c8e0" width="200"/>|<img src="https://github.com/WalkingDogWithFriends/GaeManDa/assets/81402827/27f8c028-e1bf-4654-8484-2bdae93c96b6" width="200"/>|
 
-- 시간 복잡도: O(nk)
-- K 값 검증: Davies-Bouldin index
+- 시간 복잡도: $O(KN)$
+- K 값 검증: Silhoutte Coefficient (시간복잡도: $O(N^2)$)
 - 비동기 처리: `Operation Queue`를 통해 이전의 클러스터링 cancel후 클러스터링 진행
-
-
 
 ## Contents 
 - [Requirements](##requirements)
