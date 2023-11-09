@@ -10,7 +10,7 @@ Swift KMeans Clustering
 - 비동기 처리: `Operation Queue`를 통해 이전의 클러스터링 cancel후 클러스터링 진행
 
 ## Contents 
-- [Requirements](##requirements)
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Reference](#reference)
