@@ -37,7 +37,9 @@ extension Clustering {
 	) {
 		queue.cancelAllOperations()
 		
-		let kMeansResults = kRange.map { k -> KMeans in
+		let kMeansResults = kRange
+			.filter { $0 <= data.count && $0 >= 2 }
+			.map { k -> KMeans in
 			let kMeans = KMeans(k: k, data: data, maxIterations: maxIterations)
 			queue.addOperation(kMeans)
 			return kMeans
@@ -59,7 +61,7 @@ extension Clustering {
 	
 	/// Optimal한 Clustering을 리턴합니다..
 	private func getOptimalClustering(_ kMeansResults: [KMeans<DataType>]) -> KMeans<DataType>? {
-		kMeansResults.min(by: { $0.dbi < $1.dbi })
+		kMeansResults.max(by: { $0.silhouetteScore < $1.silhouetteScore })
 	}
 	
 	private func convertToClusterResults(_ clusters: [Cluster<DataType>]) -> [ClusterResult<DataType>] {

@@ -16,8 +16,8 @@ final class LinkedList<T: Equatable> {
 	private var tail: Node<T>?
 	
 	/// 연결리스트의 현재 노드를 리턴합니다.
-	var now: Node<T>?
-	
+	private var now: Node<T>?
+
 	/// 연결리스트의 사이즈를 리턴합니다.
 	private(set) var size: Int
 
@@ -156,6 +156,11 @@ extension LinkedList {
 		}
 		
 		return -1
+	}
+	
+	/// 해당 값을 가진 노드가 있는지 여부를 리턴합니다.
+	func contain(_ target: T) -> Bool {
+		indexOf(target) != -1 ? true : false
 	}
 	
 	/// `other`을 현재 링크 리스트 뒤에 병합합니다.

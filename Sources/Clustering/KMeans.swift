@@ -20,9 +20,10 @@ final class KMeans<T: ClusterData>: Operation {
 	
 	/// Cluster들의 Centriods
 	var centroids: [Location] { clusters.map { $0.centroid } }
-	
-	private(set) var dbi = Double.greatestFiniteMagnitude
-	
+
+	/// Clustering의 Silhouette 점수
+	private(set) var silhouetteScore: Double = 0
+
 	override var isAsynchronous: Bool { true }
 	
 	// MARK: - Initializers
@@ -39,7 +40,7 @@ final class KMeans<T: ClusterData>: Operation {
 		guard !isCancelled else { return }
 		
 		run()
-		daviesBouldInIndex()
+		setSilhouetteScore()
 	}
 }
 
@@ -157,25 +158,65 @@ private extension KMeans {
 	}
 }
 
-// MARK: DBI Method
-extension KMeans {
-	func daviesBouldInIndex() {
-		var sum: Double = 0
-		let deviations = clusters.map { $0.deviation() }
+// MARK: - Validation Method
+private extension KMeans {
+	/// silhouetteScore을 계산하여 silhouetteScore 변수에 대입합니다.
+	/// 시간 복잡도 : `O(n^2)`
+	func setSilhouetteScore() {
+		self.silhouetteScore = -1
 		
-		for i in 0..<clusters.count {
-			var maxValue: Double = 0
-			for j in 0..<clusters.count where i != j {
-				let sumOfDevations = deviations[i] + deviations[j]
-				
-				let distanceCenters = clusters[i].centroid.distance(with: clusters[j].centroid)
-				
-				maxValue = max(maxValue, sumOfDevations / distanceCenters)
+		clusters.forEach { cluster in
+			if cluster.size == 0 {
+				silhouetteScore = max(silhouetteScore, 0)
+			} else {
+				silhouetteScore = max(silhouetteScore, meanSilhouetteCoefficient(at: cluster))
 			}
-			
-			sum += maxValue
 		}
+	}
+	
+	/// cluster의 평균 Silhouette 계수를 리턴합니다.
+	func meanSilhouetteCoefficient(at cluster: Cluster<T>) -> Double {
+		let cohesionCoefficients = cohesionCoefficients(cluster)
+		var minSeparationCoefficients = [Double](
+			repeating: .greatestFiniteMagnitude,
+			count: cluster.size
+		)
 		
-		dbi = sum / Double(clusters.count)
+		clusters.filter { $0 != cluster }
+			.forEach { otherCluster in
+				minSeparationCoefficients = zip(
+					seperationCoefficients(cluster, with: otherCluster),
+					minSeparationCoefficients
+				)
+				.map { min($0.0, $0.1) }
+			}
+		
+		let zipCoefficients = zip(cohesionCoefficients, minSeparationCoefficients)
+		
+		let dividend = zipCoefficients.map { $1 - $0 }
+		let divisor = zipCoefficients.map { max($0, $1) }
+		
+		let sumOfSilhouetteIndex = zip(dividend, divisor)
+			.map { $0 / $1 }
+			.reduce(0) { $0 + $1 }
+		
+		return sumOfSilhouetteIndex / Double(cluster.size)
+	}
+	
+	/// 해당 클러스터 내의 모든점의 cohesion 계수를 리턴합니다.
+	/// 각 점이 속한 클러스터간의 응집도를 판별합니다.
+	func cohesionCoefficients(_ cluster: Cluster<T>) -> [Double] {
+		cluster.group.allValues()
+			.map { cluster.deviation(from: $0) }
+	}
+	
+	/// 클러스터내의 모든점의 seperation 계수를 리턴합니다.
+	/// `with`파라미터를 통해 전달한 클러스터 간의 응집도를 판별합니다.
+	func seperationCoefficients(
+		_ cluster: Cluster<T>,
+		with other: Cluster<T>
+	) -> [Double] {
+		cluster.group.allValues()
+			.map { other.deviation(from: $0) }
 	}
 }
