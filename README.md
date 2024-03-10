@@ -22,7 +22,7 @@ Swift KMeans Clustering
 - Swift Package Manager
 ``` swift
 dependencies: [
-    .package(url: "https://github.com/SnapKit/SnapKit.git", .upToNextMajor(from: "1.0.0"))
+    .package(url: "https://github.com/jungseokyoung-cloud/Clustering.git", .upToNextMajor(from: "1.0.0"))
 ]
 ```
 
