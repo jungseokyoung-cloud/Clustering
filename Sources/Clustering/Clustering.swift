@@ -34,9 +34,26 @@ public final class Clustering<DataType: ClusterData> {
 
 // MARK: - Run Methods
 public extension Clustering {
-  /// KMeans를 실행합니다. `maxIteration`을 통해 최대 실행횟수를 지정할 수 있으며,
-  /// `kRange`를 통해 k값의 범위를 지정할 수 있습니다.
-  /// default는 `maxIteration = 20`, `kRange = (2..<9)`입니다
+  /// 클러스터링을 실행하는 메서드입니다. KMeans 또는 KMedoids 알고리즘을 이용하여
+  /// 주어진 데이터에 대해 최적의 클러스터링 결과를 찾습니다. 클러스터 개수 k의 범위를 지정하면,
+  /// 각 k값에 대해 클러스터링을 수행한 뒤 평가 지표(Validation Method)를 기준으로 최적의 결과를 선택합니다.
+  ///
+  /// - Parameters:
+  ///   - data: 클러스터링할 입력 데이터 배열입니다.
+  ///   - mode: 사용할 클러스터링 알고리즘입니다.
+  ///     - .kMeans: 평균 기반 클러스터링, O(IKN)
+  ///     - .kMemoids: 대표값 기반 클러스터링, O(IKN²)
+  ///   - validationType: 최적의 클러스터링 결과를 선택할 때 사용할 평가 지표입니다.
+  ///     - .dbi: Davies-Bouldin Index (낮을수록 좋음) O(K²)
+  ///     - .silhouette: Silhouette Score (높을수록 좋음) O(KN²)
+  ///   - maxIterations: 클러스터링 알고리즘의 최대 반복 횟수입니다. (기본값: 20)
+  ///   - kRange: 클러스터 개수 k의 탐색 범위입니다. (기본값: 2..<9)
+  ///
+  /// - Description:
+  ///   1. 새로운 작업이 들어오면, 기존 작업(OperationQueue)을 모두 취소합니다.
+  ///   2. 주어진 kRange에 대해 각각 KMeans 또는 KMedoids 인스턴스를 생성하고 클러스터링을 수행합니다.
+  ///   3. 모든 결과 중 평가 지표(validationType)를 기준으로 가장 적합한 결과를 선택합니다.
+  ///   4. 선택된 클러스터링 결과를 ClusteringResult 타입으로 변환한 후, 메인 스레드에서 delegate?.didFinishClustering(...) 콜백을 호출합니다.
   func run(
     data: [DataType],
     mode: ClusteringMode,
