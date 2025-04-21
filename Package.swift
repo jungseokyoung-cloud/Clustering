@@ -4,13 +4,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "Clustering",
-		platforms: [.iOS(.v13)],
-    products: [
-        .library(name: "Clustering", targets: ["Clustering"])
-    ],
-    targets: [
-        .target(name: "Clustering"),
-        .testTarget(name: "ClusteringTests", dependencies: ["Clustering"])
-    ]
+  name: "Clustering",
+  platforms: [.iOS(.v13)],
+  products: [
+    .library(name: "Clustering", targets: ["Clustering"])
+  ],
+  targets: [
+    .target(name: "Clustering")
+  ]
 )
