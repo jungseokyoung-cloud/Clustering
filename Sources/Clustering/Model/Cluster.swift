@@ -17,6 +17,7 @@ final class Cluster<T: ClusterData> {
 
 	var size: Int { group.count }
   var isEmpty: Bool { group.isEmpty }
+  var center: Location { sumOfLocation / Double(size) }
   
   private var sumOfLocation: Location
   
@@ -43,22 +44,6 @@ extension Cluster {
     let value = group.remove(at: index)
 		sumOfLocation -= data.location
 		return value
-	}
-	
-	/// 다른 Cluster와 합칩니다.
-	func combine(with other: Cluster) {
-    self.group += other.group
-		sumOfLocation += other.sumOfLocation
-		updateCentroid()
-	}
-}
-
-// MARK: - Centriod 로직
-extension Cluster {
-	/// Cluster내의 모든 점의 평균을 통해 Centriod를 업데이트합니다.
-	func updateCentroid() {
-    guard size != 0 else { return }
-		centroid = sumOfLocation / Double(size)
 	}
 }
 
